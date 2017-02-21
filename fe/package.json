@@ -1,0 +1,13 @@
+{
+  "name": "jb-fe",
+  "version": "1.0.0",
+  "description": "Jukebox Frontend",
+  "author": "Pedram Pejman <pedrampejman2010@gmail.com>",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.13.3"
+  }
+}
