@@ -1,0 +1,17 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: jb-app
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        name: jb-app
+    spec:
+      containers:
+      - image: pedrampejman/jb-app
+        name: jb-app
+        ports:
+        - containerPort: 8081
+          name: jb-app-server

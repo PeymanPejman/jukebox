@@ -1,7 +1,7 @@
 {
-  "name": "jb-fe",
+  "name": "jb-app",
   "version": "1.0.0",
-  "description": "Jukebox Frontend",
+  "description": "Jukebox Application",
   "author": "Pedram Pejman <pedrampejman2010@gmail.com>",
   "main": "server.js",
   "scripts": {
