@@ -10,13 +10,13 @@ COPY package.json /usr/jukebox
 RUN npm install
 
 # Set environment variables
-ENV PORT 8081
+ENV APP_RPC_PORT 34000
 
 # Bundle app source
 COPY . /usr/jukebox
 
 # Expose port for HTTP traffic
-EXPOSE ${PORT}
+EXPOSE ${APP_RPC_PORT}
 
 # Start the server
 CMD [ "npm", "start" ]

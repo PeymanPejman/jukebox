@@ -1,11 +1,30 @@
-const PORT = process.env.PORT
-const express = require('express')
-const app = express()
+var appClient = require('./app_client.js');
 
-app.get('/', function (req, res) {
-  res.send('Hello World!\n')
+const PORT = process.env.FE_HTTP_PORT;
+const express = require('express');
+const httpServer = express();
+
+/*  
+ * Handle HTTP traffic for GET on '/'
+ */
+httpServer.get('/', function (req, res) {
+  // Send an Handshake RPC to app service
+  appClient.shake('Pedram', function (err, rpcResp) {
+    if (err) { 
+      console.log("Error sending RPC")
+      res.send("Error sending RPC\n");
+    }
+    else {
+      console.log("Received message from app: " + rpcResp.message); 
+      res.send(rpcResp.message + "\n");
+    }
+  });
 })
 
-app.listen(PORT, function () {
+/*
+ * Bind to the specified port
+ */
+httpServer.listen(PORT, function () {
   console.log('Jukebox is running on port ' + PORT)
 })
+

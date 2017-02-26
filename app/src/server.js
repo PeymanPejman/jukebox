@@ -1,7 +1,7 @@
 var PROTO_PATH = __dirname + '/../../protos/app.proto';
 
-//var PORT = process.env.PORT;
-var IP_PORT = '0.0.0.0:50051';
+var PORT = process.env.APP_RPC_PORT;
+var IP = '0.0.0.0';
 var grpc = require('grpc');
 var proto = grpc.load(PROTO_PATH).app;
 
@@ -19,7 +19,7 @@ function shake(call, callback) {
 function main() {
   var server = new grpc.Server();
   server.addProtoService(proto.HandshakeService.service, {shake: shake});
-  server.bind(IP_PORT, grpc.ServerCredentials.createInsecure());
+  server.bind(IP + ":" + PORT, grpc.ServerCredentials.createInsecure());
   server.start();
 }
 

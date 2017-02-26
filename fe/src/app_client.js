@@ -1,21 +1,30 @@
 var PROTO_PATH = __dirname + '/../../protos/app.proto';
-var IP_PORT = 'localhost:50051';
+var IP = 'localhost';
+var PORT = process.env.APP_RPC_PORT;
 
 var grpc = require('grpc');
 var proto = grpc.load(PROTO_PATH).app;
+var client = new proto.HandshakeService(IP + ":" + PORT,
+    grpc.credentials.createInsecure());
+
+/*
+ * Stub for the RPC client
+ */
+function shake(user, callback) {
+  client.shake({name: user}, callback);
+}
+
+/*
+ * List of exported entities from the app_client module
+ */
+module.exports = {
+  shake: shake
+};
 
 function main() {
-  var client = new proto.HandshakeService(IP_PORT,
-      grpc.credentials.createInsecure());
-
   var user = 'Pedram';
-  client.shake({name: user}, function(err, response) {
-    if (response)
-      console.log('Received message: ', response.message);
-    else
-      console.log('Could not execute RPC');
-  });
-
+  shake(user);
 }
 
 if (require.main === module) main();
+
