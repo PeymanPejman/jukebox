@@ -10,8 +10,8 @@ spec:
         name: jb-app
     spec:
       containers:
-      - image: pedrampejman/jb-app
-        name: jb-app
-        ports:
-        - containerPort: 8081
-          name: jb-app-server
+        - image: pedrampejman/jb-app
+          name: jb-app
+          ports:
+          - containerPort: 34000
+            name: jb-app-server

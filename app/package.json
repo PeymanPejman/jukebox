@@ -4,11 +4,7 @@
   "description": "Jukebox Application",
   "author": "Pedram Pejman <pedrampejman2010@gmail.com>",
   "main": "server.js",
-  "scripts": {
-    "start": "node src/server.js"
-  },
   "dependencies": {
-    "express": "^4.13.3",
     "grpc": "^1.0.0"
   }
 }

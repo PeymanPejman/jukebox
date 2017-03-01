@@ -1,10 +1,11 @@
-var PROTO_PATH = __dirname + '/../../protos/app.proto';
-var IP = 'localhost';
-var PORT = process.env.APP_RPC_PORT;
+var PROTO_PATH = __dirname + '/../protos/app.proto';
+
+var HOST = process.env.APP_RPC_HOST || 'localhost';
+var PORT = process.env.APP_RPC_PORT || '34000';
 
 var grpc = require('grpc');
 var proto = grpc.load(PROTO_PATH).app;
-var client = new proto.HandshakeService(IP + ":" + PORT,
+var client = new proto.HandshakeService(HOST + ":" + PORT,
     grpc.credentials.createInsecure());
 
 /*
@@ -22,8 +23,12 @@ module.exports = {
 };
 
 function main() {
+  console.log("Contacting " + HOST + ":" + PORT);
   var user = 'Pedram';
-  shake(user);
+  shake(user, function(err, resp){
+  if (err) console.log("some tin wong: " + err);
+  else  console.log(resp.message);
+  });
 }
 
 if (require.main === module) main();

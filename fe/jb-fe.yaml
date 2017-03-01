@@ -15,3 +15,5 @@ spec:
         ports:
         - containerPort: 8080
           name: jb-fe-http
+        - containerPort: 34000
+          name: jb-app-rpc
