@@ -34,6 +34,7 @@ Each of the four services live in their own containers. To experiment with any o
 - Clone this repository
 - Pick which service you would like to work on
 - Point it to the appropriate endpoint
+- Install dependencies using 'npm install'
 - Run your service using 'npm start'
 
 If you're confused by the third step read this: when you run a service locally, you must tell it where to look for the other 3 services. There are usually 2 mechanisms for doing this 1) environment variables 2) command-line arguments. I have chosen method 1. So for example, if I wanted to run FE locally, and point it to the live app (hosted on a GKE cluster) I would run 
@@ -44,7 +45,7 @@ We then build the application
 ```{r, engine='bash', count_lines}
 make build
 ```
-Note that the build process requires a valid docker installation and root privileges. If you want to develop directly on your host machine (and not in a docker container) then run 
+Note that the build process requires a valid docker installation and root privileges. If you don't want to install docker and would rather develop directly on your machine then run 
 ```{r, engine='bash', count_lines}
 make protos
 ```
@@ -53,6 +54,7 @@ Then start the FE service
 
 ```{r, engine='bash', count_lines}
 cd fe
+npm install
 npm start
 ```
 

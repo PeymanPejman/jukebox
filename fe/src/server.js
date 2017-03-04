@@ -1,6 +1,6 @@
 var appClient = require('./app_client.js');
 
-const PORT = process.env.FE_HTTP_PORT;
+const PORT = process.env.FE_HTTP_PORT || '8080';
 const express = require('express');
 const httpServer = express();
 
