@@ -1,8 +1,14 @@
 all: build
-build: protos network
 
-protos: FORCE
+build: protos
+
+protos: .FORCE
 	echo fe app | xargs -n 1 cp -rf protos
+
 network:
 	sudo ./bash/network.sh
-FORCE:
+
+clean:
+	rm -rf */protos
+
+.FORCE:

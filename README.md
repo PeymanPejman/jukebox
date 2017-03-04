@@ -15,7 +15,7 @@ This application is divided into three different services:
 - Mysql database, which acts as the primary agent for persistent storage
 
 ## Installation
-This is a containerized application, and thus installation should be fairly straight-forward for those who have used Docker before. The application is broken up into Frontend, Application and Mysql services.
+This is a containerized application, and thus installation should be fairly straight-forward. The application is broken up into Frontend, Application and Mysql services.
 
 Here are the addresses for the live production services and what ports they expect what type of traffic on:
 
