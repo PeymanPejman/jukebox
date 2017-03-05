@@ -8,5 +8,8 @@
     "grpc": "^1.0.0",
     "promise": "^7.1.1",
     "spotify-web-api-node": "2.3.6"
+  },
+  "scripts": {
+    "start" : "node src/server.js"
   }
 }

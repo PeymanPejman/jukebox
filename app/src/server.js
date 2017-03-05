@@ -1,7 +1,7 @@
 var PROTO_PATH = __dirname + '/../protos/app.proto';
 
 var PORT = process.env.APP_RPC_PORT || "34000";
-var IP = process.env.APP_RPC_HOST || "0.0.0.0";
+var IP = "0.0.0.0";
 var grpc = require('grpc');
 var proto = grpc.load(PROTO_PATH).app;
 
