@@ -1,5 +1,22 @@
-var SpotifyWebApi = require('spotify-web-api-node')
+var constants = require('./constants.js');
+var SpotifyWebApi = require('spotify-web-api-node');
 
+/****************** Constants *******************/
+
+// Audio Features
+const AUDIO_FEATURE_ACOUSTICNESS = 'acousticness';
+const AUDIO_FEATURE_DANCEABILITY = 'danceability';
+const AUDIO_FEATURE_ENERGY = 'energy';
+const AUDIO_FEATURE_TEMPO = 'tempo';
+const AUDIO_FEATURE_VALENCE = 'valence';
+
+// Seed Track Fields
+const SEED_TRACK_ALBUM = 'album';
+const SEED_TRACK_ARTISTS = 'artists';
+const SEED_TRACK_NAME = 'name';
+const SEED_TRACK_ID = 'id';
+
+// InitialJukeboxState member fields
 const SEED_TRACKS = 'seed-tracks';
 const DEFAULT_PARAMS = 'default-params';
 
@@ -21,8 +38,8 @@ function getInitialJukeboxState(accessToken) {
             SEED_TRACKS : seedTracks,
             DEFAULT_PARAMS : defaultParams 
           };
-        }, errorHandler);
-    }, errorHandler);
+        }, bubbleUpError);
+    }, bubbleUpError);
 }
 
 /************** Spotify API Wrappers ****************/
@@ -39,6 +56,10 @@ function getTopTracks(accessToken) {
   return spotifyApi.getMyTopTracks();
 }
 
+/*
+ * Returns a promise containing json-encoded set of features for 
+ * every track in trackIds
+ */
 function getAudioFeatures(accessToken, trackIds) {
   // Instatiate api instance and set its accessToken
   var spotifyApi = new SpotifyWebApi();
@@ -64,12 +85,13 @@ function extractTracksIds(topTracksObj) {
  */
 function getDefaultJukeboxParams(tracksFeatures) {
   features = {
-    'acousticness' : 0,
-    'danceability' : 0,
-    'energy' : 0,
-    'tempo' : 0,
-    'valence' : 0
-  }
+    [AUDIO_FEATURE_ACOUSTICNESS] : 0,
+    [AUDIO_FEATURE_DANCEABILITY] : 0,
+    [AUDIO_FEATURE_ENERGY] : 0,
+    [AUDIO_FEATURE_TEMPO] : 0,
+    [AUDIO_FEATURE_VALENCE] : 0
+  };
+
   var numTracks = tracksFeatures.body.audio_features.length;
 
   // Aggregate every feature for every track
@@ -79,7 +101,7 @@ function getDefaultJukeboxParams(tracksFeatures) {
     });   
   });
 
-  // Take simply average of all features
+  // Take simple average of all features
   Object.keys(features).forEach(function(feature) {
     features[feature] = features[feature] / numTracks;  
   });
@@ -93,10 +115,10 @@ function getDefaultJukeboxParams(tracksFeatures) {
 function getSeedTracks(topTracksObj) {
   seedTracks = [];
   fields = {
-    'album': null,
-    'artists': [],
-    'name': null,
-    'id': null,
+    [SEED_TRACK_ALBUM]: null,
+    [SEED_TRACK_ARTISTS]: [],
+    [SEED_TRACK_NAME]: null,
+    [SEED_TRACK_ID]: null,
   };
   
   // Record select fields of each track in seedTracks
@@ -112,10 +134,10 @@ function getSeedTracks(topTracksObj) {
 }
 
 /*
- * Generic error handler - should not be used in prod
+ * Bubble error to parent promise
  */
-function errorHandler(err) {
-  console.log(err);
+function bubbleUpError(err) {
+  return err;
 }
 
 /******************** Main Routines ********************/
@@ -128,10 +150,13 @@ module.exports = {
  * Example usage of getInitialJukeboxState()
  */
 function main() {
-  accessToken =  
-    'BQD4gqZ79fYkOFjIQwiBPaUtKJLFlaN58lspY5zmtvY9T8RSqMWVq-LMSvTocb4Lvn-cuOkzOyDI9E8zi5s3MR1k90aP4yTfN9UuZTEu6ttWCorX5GM4f7csSNe86ZM6WKwKuPg8C9sS50gGUmsDGQ';
-  getInitialJukeboxState(accessToken).then(function(initialState){
-    console.log(JSON.stringify(initialState));
+  accessToken = ''; 
+
+  getInitialJukeboxState(accessToken).
+    then(function(initialState){
+    console.log(initialState);
+  }, function(err){
+    console.log(err);
   });
 }
 
