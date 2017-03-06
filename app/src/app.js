@@ -1,4 +1,3 @@
-var constants = require('./constants.js');
 var SpotifyWebApi = require('spotify-web-api-node');
 
 /****************** Constants *******************/

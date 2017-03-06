@@ -2,6 +2,7 @@ var appClient = require('./app_client.js');
 
 var PORT = process.env.FE_HTTP_PORT || '8080';
 var CLIENT_ID = process.env.CLIENT_ID || 'c99f31ef396d40ffb498f24d1803b17f';
+var FE_HTTP_HOST = process.env.FE_HTTP_HOST || 'http://104.197.80.118';
 
 var express = require('express');
 var httpServer = express();
@@ -14,7 +15,7 @@ httpServer.get('/', function (req, res) {
 	// Set scopes, response type and callback uri
 	var scopes = 'user-top-read';
 	var response_type = 'token';
-	var redirect_uri = 'http://104.197.80.118/auth-callback';
+	var redirect_uri = FE_HTTP_ROOT + '/auth-callback';
 
 	res.redirect('https://accounts.spotify.com/authorize' + 
 		'?response_type=' + response_type +
@@ -30,7 +31,7 @@ httpServer.get('/', function (req, res) {
  */
 httpServer.get('/auth-callback', function (req, res) {
   // Check if access token was supplied
-  if (req.query.accesstoken) {
+  if (req.query.access_token) {
     var accessToken = req.query.access_token;
     console.log("Access Token: " + accessToken);
     res.send("Access Token: " + accessToken);
@@ -46,7 +47,8 @@ httpServer.get('/auth-callback', function (req, res) {
  */
 httpServer.get('/test', function (req, res) {
   // Send an Handshake RPC to app service
-  appClient.shake('Pedram', function (err, rpcResp) {
+  appClient.shake(
+      req.query.name ? req.query.name : 'Pedram', function (err, rpcResp) {
     if (err) { 
       console.log("Error sending RPC");
       res.send("Error sending RPC\n");
