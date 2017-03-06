@@ -1,17 +1,54 @@
 var appClient = require('./app_client.js');
 
-const PORT = process.env.FE_HTTP_PORT || '8080';
-const express = require('express');
-const httpServer = express();
+var PORT = process.env.FE_HTTP_PORT || '8080';
+var CLIENT_ID = process.env.CLIENT_ID || 'c99f31ef396d40ffb498f24d1803b17f';
+
+var express = require('express');
+var httpServer = express();
 
 /*  
- * Handle HTTP traffic for GET on '/'
+ * Handles HTTP GET traffic on '/'
+ * Redirects user to Spotify authroization endpoint
  */
 httpServer.get('/', function (req, res) {
+	// Set scopes, response type and callback uri
+	var scopes = 'user-top-read';
+	var response_type = 'token';
+	var redirect_uri = 'http://104.197.80.118/auth-callback';
+
+	res.redirect('https://accounts.spotify.com/authorize' + 
+		'?response_type=' + response_type +
+		'&client_id=' + CLIENT_ID +
+		'&scope=' + encodeURIComponent(scopes) +
+		'&redirect_uri=' + encodeURIComponent(redirect_uri));
+});
+
+/*  
+ * Handles HTTP GET traffic on '/auth-callback'
+ * Extracts access_token and sends it back to user to be 
+ * used for debugging
+ */
+httpServer.get('/auth-callback', function (req, res) {
+  // Check if access token was supplied
+  if (req.query.accesstoken) {
+    var accessToken = req.query.access_token;
+    console.log("Access Token: " + accessToken);
+    res.send("Access Token: " + accessToken);
+  } else {
+    console.log("Access token was not obtained.");
+    res.send("Access token not obtained."); 
+  }
+});
+
+/*  
+ * Handles HTTP GET traffic on '/test'
+ * Tests the RPC connection to App.HandshakeService
+ */
+httpServer.get('/test', function (req, res) {
   // Send an Handshake RPC to app service
   appClient.shake('Pedram', function (err, rpcResp) {
     if (err) { 
-      console.log("Error sending RPC")
+      console.log("Error sending RPC");
       res.send("Error sending RPC\n");
     }
     else {
@@ -19,12 +56,12 @@ httpServer.get('/', function (req, res) {
       res.send(rpcResp.message + "\n");
     }
   });
-})
+});
 
 /*
- * Bind to the specified port
+ * Binds to the specified port
  */
 httpServer.listen(PORT, function () {
   console.log('Jukebox is running on port ' + PORT)
-})
+});
 
