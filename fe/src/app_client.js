@@ -5,29 +5,41 @@ var PORT = process.env.APP_RPC_PORT || '34000';
 
 var grpc = require('grpc');
 var proto = grpc.load(PROTO_PATH).app;
-var client = new proto.HandshakeService(HOST + ":" + PORT,
+var handshakeClient = new proto.HandshakeService(HOST + ":" + PORT,
+    grpc.credentials.createInsecure());
+var appClient = new proto.AppService(HOST + ":" + PORT,
     grpc.credentials.createInsecure());
 
 /*
  * Stub for the RPC client
  */
+function getInitialJukeboxState(token, callback) {
+  appClient.getInitialJukeboxState({access_token: token}, callback);
+}
+
+/*
+ * Stub for the RPC client
+ */
 function shake(user, callback) {
-  client.shake({name: user}, callback);
+  handshakeClient.shake({name: user}, callback);
 }
 
 /*
  * List of exported entities from the app_client module
  */
 module.exports = {
-  shake: shake
+  shake: shake,
+  getInitialJukeboxState: getInitialJukeboxState
 };
 
 function main() {
   console.log("Contacting " + HOST + ":" + PORT);
-  var user = 'Pedram';
-  shake(user, function(err, resp){
-  if (err) console.log("some tin wong: " + err);
-  else  console.log(resp.message);
+
+  var access_token = "";
+
+  getInitialJukeboxState(access_token, function(err, resp) {
+    if (err) console.log("GetInitialJukeboxState did not succeed: " + err);
+    else console.log("GetInitialJukeboxState succeeded: " + JSON.stringify(resp));
   });
 }
 

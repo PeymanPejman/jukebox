@@ -26,18 +26,29 @@ httpServer.get('/', function (req, res) {
 
 /*  
  * Handles HTTP GET traffic on '/auth-callback'
- * Extracts access_token and sends it back to user to be 
- * used for debugging
+ * Extracts access_token, executes getInitialJukeboxState RPC
+ * and returns response to user.
  */
 httpServer.get('/auth-callback', function (req, res) {
-  // Check if access token was supplied
+  // Check if access token was supplied by Spotify API
   if (req.query.access_token) {
     var accessToken = req.query.access_token;
     console.log("Access Token: " + accessToken);
-    res.send("Access Token: " + accessToken);
+
+    appClient.getInitialJukeboxState(accessToken, function(err, resp) {
+      if (err) { 
+        res.send(err);
+        console.log(err);
+      }
+      else {
+        res.send(resp);
+        console.log(resp);
+      }
+    });
+
   } else {
-    console.log("Access token was not obtained.");
-    res.send("Access token not obtained."); 
+    console.log("access_token was not supplied.");
+    res.send("access_token was not supplied."); 
   }
 });
 
@@ -64,6 +75,6 @@ httpServer.get('/test', function (req, res) {
  * Binds to the specified port
  */
 httpServer.listen(PORT, function () {
-  console.log('Jukebox is running on port ' + PORT)
+  console.log('Jukebox is running on port ' + PORT + '\n');
 });
 
