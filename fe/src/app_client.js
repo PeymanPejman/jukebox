@@ -32,6 +32,9 @@ module.exports = {
   getInitialJukeboxState: getInitialJukeboxState
 };
 
+/*
+ * Example usage of getInitialJukeboxState call
+ */
 function main() {
   console.log("Contacting " + HOST + ":" + PORT);
 

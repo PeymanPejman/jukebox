@@ -29,6 +29,7 @@ const DEFAULT_PARAMS = 'defaultParams';
 function getInitialJukeboxState(accessToken) {
   return getTopTracks(accessToken)
     .then(function(topTracksObj) {
+      console.log(topTracksObj);
       seedTracks = getSeedTracks(topTracksObj);
       tracksIds = extractTracksIds(topTracksObj);
       return getAudioFeatures(accessToken, tracksIds)

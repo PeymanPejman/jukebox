@@ -27,7 +27,7 @@ message InitialJukeboxState {
 }
 
 /*
- * Represents a possible seed track, to be presented to the user
+ * Represents a single potential seed track 
  */
 message SeedTrack {
   string id = 1;

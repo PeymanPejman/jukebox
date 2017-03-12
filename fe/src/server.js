@@ -8,24 +8,24 @@ var express = require('express');
 var httpServer = express();
 
 /*  
- * Handles HTTP GET traffic on '/'
+ * Handles HTTP.GET traffic on '/'
  * Redirects user to Spotify authroization endpoint
  */
 httpServer.get('/', function (req, res) {
-	// Set scopes, response type and callback uri
-	var scopes = 'user-top-read';
-	var response_type = 'token';
-	var redirect_uri = FE_HTTP_ROOT + '/auth-callback';
+  // Set scopes, response type and callback uri
+  var scopes = 'user-top-read';
+  var response_type = 'token';
+  var redirect_uri = FE_HTTP_ROOT + '/auth-callback';
 
-	res.redirect('https://accounts.spotify.com/authorize' + 
-		'?response_type=' + response_type +
-		'&client_id=' + CLIENT_ID +
-		'&scope=' + encodeURIComponent(scopes) +
-		'&redirect_uri=' + encodeURIComponent(redirect_uri));
+  res.redirect('https://accounts.spotify.com/authorize' + 
+      '?response_type=' + response_type +
+      '&client_id=' + CLIENT_ID +
+      '&scope=' + encodeURIComponent(scopes) +
+      '&redirect_uri=' + encodeURIComponent(redirect_uri));
 });
 
 /*  
- * Handles HTTP GET traffic on '/auth-callback'
+ * Handles HTTP.GET traffic on '/auth-callback'
  * Extracts access_token, executes getInitialJukeboxState RPC
  * and returns response to user.
  */
@@ -48,6 +48,7 @@ httpServer.get('/auth-callback', function (req, res) {
 
   } else {
     console.log("access_token was not supplied.");
+    // TODO: Replace with error page redirect
     res.send("access_token was not supplied."); 
   }
 });

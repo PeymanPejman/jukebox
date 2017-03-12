@@ -10,11 +10,11 @@ var proto = grpc.load(PROTO_PATH).app;
 
 /**************** AppService RPC methods  *****************/
 
-/**
+/*
  * Implements the GetInitialJukeboxState RPC method
  */
 function getInitialJukeboxState(call, callback) {
-  console.log('Received request with access token : ' 
+  console.log('Received request with access token : '
       + call.request.access_token);
   app.getInitialJukeboxState(call.request.access_token).
     then(function(initialState) {
@@ -28,7 +28,7 @@ function getInitialJukeboxState(call, callback) {
 
 /**************** HandshakeService RPC methods  *****************/
 
-/**
+/*
  * Implements the Shake RPC method for testing purposes 
  */
 function shake(call, callback) {
