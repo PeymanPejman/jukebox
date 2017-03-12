@@ -11,34 +11,36 @@ const AUDIO_FEATURE_VALENCE = 'valence';
 
 // Seed Track Fields
 const SEED_TRACK_ALBUM = 'album';
-const SEED_TRACK_ARTISTS = 'artists';
+const SEED_TRACK_ARTIST = 'artist';
 const SEED_TRACK_NAME = 'name';
 const SEED_TRACK_ID = 'id';
+const SEED_TRACK_IMAGE = 'image';
 
 // InitialJukeboxState member fields
-const SEED_TRACKS = 'seed-tracks';
-const DEFAULT_PARAMS = 'default-params';
+const SEED_TRACKS = 'seedTracks';
+const DEFAULT_PARAMS = 'defaultParams';
 
 /************** Exported Routines ****************/
 
 /*
- * Returns a promise containing an object of format
- * {SEED_TRACKS: [], DEFAULT_PARAMS: {}}
+ * Returns a promise containing the initial jukebox state
+ * with format {SEED_TRACKS: [], DEFAULT_PARAMS: {}}
  */
 function getInitialJukeboxState(accessToken) {
   return getTopTracks(accessToken)
     .then(function(topTracksObj) {
+      console.log(topTracksObj);
       seedTracks = getSeedTracks(topTracksObj);
       tracksIds = extractTracksIds(topTracksObj);
       return getAudioFeatures(accessToken, tracksIds)
         .then(function(tracksFeatures) {
           defaultParams = getDefaultJukeboxParams(tracksFeatures);
           return {
-            SEED_TRACKS : seedTracks,
-            DEFAULT_PARAMS : defaultParams 
+            [SEED_TRACKS] : seedTracks,
+            [DEFAULT_PARAMS] : defaultParams 
           };
         }, bubbleUpError);
-    }, bubbleUpError);
+    }, getEmptyInitialJukeboxState);
 }
 
 /************** Spotify API Wrappers ****************/
@@ -113,36 +115,45 @@ function getDefaultJukeboxParams(tracksFeatures) {
  */
 function getSeedTracks(topTracksObj) {
   seedTracks = [];
-  fields = {
-    [SEED_TRACK_ALBUM]: null,
-    [SEED_TRACK_ARTISTS]: [],
-    [SEED_TRACK_NAME]: null,
-    [SEED_TRACK_ID]: null,
-  };
-  
+
   // Record select fields of each track in seedTracks
   topTracksObj.body.items.forEach(function(track){
-    protoTrack = {};
-    Object.keys(fields).forEach(function(field) {
-      protoTrack[field] = track[field];
-    });
-    seedTracks.push(protoTrack);
+    tempTrack = {};
+    tempTrack[SEED_TRACK_NAME] = track[SEED_TRACK_NAME];
+    tempTrack[SEED_TRACK_ID] = track[SEED_TRACK_ID];
+    tempTrack[SEED_TRACK_ALBUM] = track[SEED_TRACK_ALBUM]['name']; 
+    tempTrack[SEED_TRACK_ARTIST] = track['artists'][0]['name'];
+    tempTrack[SEED_TRACK_IMAGE] = track[SEED_TRACK_ALBUM]['images'][0]['url'];
+    seedTracks.push(tempTrack);
   });
 
   return seedTracks;
 }
 
 /*
- * Bubble error to parent promise
+ * Bubbles error to parent promise
  */
 function bubbleUpError(err) {
   return err;
 }
 
+/*
+ * Returns an empty InitialJukeboxState object
+ */
+function getEmptyInitialJukeboxState(error) {
+  // Log why we are returning empty initial state
+  console.log(error);
+
+  return {
+    [SEED_TRACKS] : null, 
+    [DEFAULT_PARAMS] : null
+  };
+}
+
 /******************** Main Routines ********************/
 
 module.exports = {
-  getInitialJukeboxState: getInitialJukeboxState
+  getInitialJukeboxState: getInitialJukeboxState,
 };
 
 /*

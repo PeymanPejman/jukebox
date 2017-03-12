@@ -2,6 +2,54 @@ syntax = "proto3";
 
 package app;
 
+/********************* AppService Entities *********************/
+
+/*
+ * App service exposing RPC call to get the initial Jukebox state
+ */
+service AppService {
+  rpc GetInitialJukeboxState(AuthCreds) returns (InitialJukeboxState) {}
+}
+
+/*
+ * Spotify auth credentials needed for privileged API calls 
+ */ 
+message AuthCreds {
+  string access_token = 1;
+}
+
+/*
+ * Describes the initial state of a Jukebox instance
+ */
+message InitialJukeboxState {
+  repeated SeedTrack seedTracks = 1;
+  DefaultParams defaultParams = 2; 
+}
+
+/*
+ * Represents a single potential seed track 
+ */
+message SeedTrack {
+  string id = 1;
+  string name = 2;
+  string artist = 3;
+  string album = 4;
+  string image = 5;
+}
+
+/*
+ * Represents the default audio feature parameters
+ */
+message DefaultParams {
+  float acousticness = 1;
+  float danceability = 2;
+  float energy = 3;
+  float tempo = 4;
+  float valence = 5; 
+}
+
+/********************* HandshakeService Entities *********************/
+
 service HandshakeService {
   rpc Shake(HandshakeRequest) returns (HandshakeResponse) {}
 }

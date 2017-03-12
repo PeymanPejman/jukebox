@@ -8,36 +8,48 @@ var express = require('express');
 var httpServer = express();
 
 /*  
- * Handles HTTP GET traffic on '/'
+ * Handles HTTP.GET traffic on '/'
  * Redirects user to Spotify authroization endpoint
  */
 httpServer.get('/', function (req, res) {
-	// Set scopes, response type and callback uri
-	var scopes = 'user-top-read';
-	var response_type = 'token';
-	var redirect_uri = FE_HTTP_ROOT + '/auth-callback';
+  // Set scopes, response type and callback uri
+  var scopes = 'user-top-read';
+  var response_type = 'token';
+  var redirect_uri = FE_HTTP_ROOT + '/auth-callback';
 
-	res.redirect('https://accounts.spotify.com/authorize' + 
-		'?response_type=' + response_type +
-		'&client_id=' + CLIENT_ID +
-		'&scope=' + encodeURIComponent(scopes) +
-		'&redirect_uri=' + encodeURIComponent(redirect_uri));
+  res.redirect('https://accounts.spotify.com/authorize' + 
+      '?response_type=' + response_type +
+      '&client_id=' + CLIENT_ID +
+      '&scope=' + encodeURIComponent(scopes) +
+      '&redirect_uri=' + encodeURIComponent(redirect_uri));
 });
 
 /*  
- * Handles HTTP GET traffic on '/auth-callback'
- * Extracts access_token and sends it back to user to be 
- * used for debugging
+ * Handles HTTP.GET traffic on '/auth-callback'
+ * Extracts access_token, executes getInitialJukeboxState RPC
+ * and returns response to user.
  */
 httpServer.get('/auth-callback', function (req, res) {
-  // Check if access token was supplied
+  // Check if access token was supplied by Spotify API
   if (req.query.access_token) {
     var accessToken = req.query.access_token;
     console.log("Access Token: " + accessToken);
-    res.send("Access Token: " + accessToken);
+
+    appClient.getInitialJukeboxState(accessToken, function(err, resp) {
+      if (err) { 
+        res.send(err);
+        console.log(err);
+      }
+      else {
+        res.send(resp);
+        console.log(resp);
+      }
+    });
+
   } else {
-    console.log("Access token was not obtained.");
-    res.send("Access token not obtained."); 
+    console.log("access_token was not supplied.");
+    // TODO: Replace with error page redirect
+    res.send("access_token was not supplied."); 
   }
 });
 
@@ -64,6 +76,6 @@ httpServer.get('/test', function (req, res) {
  * Binds to the specified port
  */
 httpServer.listen(PORT, function () {
-  console.log('Jukebox is running on port ' + PORT)
+  console.log('Jukebox is running on port ' + PORT + '\n');
 });
 
