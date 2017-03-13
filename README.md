@@ -15,14 +15,14 @@ This application is divided into three different services:
 - Mysql database, which acts as the primary agent for persistent storage
 
 ## Installation
-This is a containerized application, and thus installation should be fairly straight-forward. The application is broken up into Frontend, Application and Mysql services.
+This is a containerized application, and thus installation should be fairly straight-forward. The application is broken up into Frontend, Application and Mysql services. If you are familiar with Docker, then you should simply be able to build the images, hook them up as you wish and run them with no problem. If you are not familiar with Docker and/or Kubernetes and would rather develop locally on your machine, continue reading.
 
 Here are the addresses for the live production services and what ports they expect what type of traffic on:
 
 
 | Service        | Service ID           | IP  | Protocol | Port |
 | ------------- |:-------------:|:--------:|:--------:|--------:|
-| Frontend     |jb-fe-prod | 104.197.80.118 | HTTP | 80
+| Frontend     |jb-fe-prod | 104.196.62.203 | HTTP | 80
 |Application     | jb-app-prod      |   104.154.209.114 | RPC | 34000
 | MySql | jb-sql-prod | 104.196.185.219 | TCP | 3306
 

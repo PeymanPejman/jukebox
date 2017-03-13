@@ -2,8 +2,7 @@ var appClient = require('./app_client.js');
 
 var PORT = process.env.FE_HTTP_PORT || '8080';
 var CLIENT_ID = process.env.CLIENT_ID || 'c99f31ef396d40ffb498f24d1803b17f';
-//var FE_HTTP_HOST = process.env.FE_HTTP_HOST || 'http://104.197.80.118';
-var FE_HTTP_HOST = process.env.FE_HTTP_HOST || 'http://plato.cs.virginia.edu/~pp5nv';
+var FE_HTTP_HOST = process.env.FE_HTTP_HOST || 'http://104.196.62.203';
 var CLIENT_SECRET = process.env.CLIENT_SECRET;
 
 var express = require('express');
