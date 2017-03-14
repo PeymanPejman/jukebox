@@ -8,10 +8,11 @@ This project has two main purposes
 - Build a dope jukebox using Spotify's API
 
 ## Architecture Overview
-This application is divided into three different services:
+This application is divided into four different services:
 
 - Frontend (FE), which acts as the presentation layer
-- Application (APP), which acts as the brain, doing the computation and supplying FE with content
+- Application (APP), which acts as the brain, delegating computation to GEN and supplying FE with content
+- Genius (GEN), which acts as the computation engine, executing all ML routines
 - Mysql database, which acts as the primary agent for persistent storage
 
 ## Installation
@@ -20,14 +21,15 @@ This is a containerized application, and thus installation should be fairly stra
 Here are the addresses for the live production services and what ports they expect what type of traffic on:
 
 
-| Service        | Service ID           | IP  | Protocol | Port |
-| ------------- |:-------------:|:--------:|:--------:|--------:|
-| Frontend     |jb-fe-prod | 104.196.62.203 | HTTP | 80
-|Application     | jb-app-prod      |   104.154.209.114 | RPC | 34000
-| MySql | jb-sql-dev | 104.196.23.18 | TCP | 3306
+| Service        | Service ID           | Protocol | IP              | Port  |
+|:--------------:|:--------------------:|:--------:|:---------------:|------:|
+| Frontend       | jb-fe-prod           | HTTP     | 104.196.62.203  | 80    |
+| Application    | jb-app-prod          | RPC      | 104.154.209.114 | 34000 |
+| Genius         | jb-gen-prod          | RPC      | 104.196.209.40  | 35000 |
+| MySql          | jb-sql-dev           | TCP      | 104.196.23.18   | 3306  |
 
 
-Each of the three services live in their own containers. To experiment with any of them, simply do the following
+Each of the four services live in their own containers. To experiment with any of them, simply do the following
 
 - Clone this repository
 - Decide which service you would like to work on
