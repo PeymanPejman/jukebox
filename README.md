@@ -24,8 +24,8 @@ Here are the addresses for the live production services and what ports they expe
 | Service        | Service ID           | Protocol | IP              | Port  |
 |:--------------:|:--------------------:|:--------:|:---------------:|------:|
 | Frontend       | jb-fe-prod           | HTTP     | 104.196.62.203  | 80    |
-| Application    | jb-app-prod          | RPC      | 104.154.209.114 | 34000 |
-| Genius         | jb-gen-prod          | RPC      | 104.196.209.40  | 35000 |
+| Application    | jb-app-prod          | gRPC     | 104.154.209.114 | 34000 |
+| Genius         | jb-gen-prod          | gRPC     | 104.196.209.40  | 35000 |
 | MySql          | jb-sql-dev           | TCP      | 104.196.23.18   | 3306  |
 
 
