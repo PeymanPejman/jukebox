@@ -86,6 +86,14 @@ exports.testView = function(req, res) {
   res.render('testView');
 };
 
+/*
+ * Returns application home page
+ */
+exports.homeView = function(req, res) {
+  console.log("Serving home page");
+  res.render('homeView');
+};
+
 /********************** Helpers *************************/
 
 /*
