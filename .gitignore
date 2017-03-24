@@ -2,7 +2,6 @@
 *.log
 *.swp
 *.pyc
-*pb*
 *node_modules*
 */protos
 */*/protos
