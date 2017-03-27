@@ -22,6 +22,7 @@ const SEED_TRACK_IMAGE = 'image';
 const SEED_TRACKS = 'seedTracks';
 const AUDIO_FEATURE_PARAMS = 'audioFeatureParams';
 const ACCESS_TOKEN = 'accessToken';
+const USER_ID = 'userId';
 
 /************** Exported Routines ****************/
 
@@ -39,7 +40,7 @@ function init() {
  * Returns a promise containing the initial jukebox state
  * with format {SEED_TRACKS: [], AUDIO_FEATURE_PARAMS: {}}
  */
-function getInitialJukeboxState(accessToken) {
+function getInitialJukeboxState(accessToken, userId) {
 
   // Return values
   var seedTracks, defaultParams;
@@ -58,7 +59,8 @@ function getInitialJukeboxState(accessToken) {
       return {
         [SEED_TRACKS] : seedTracks,
         [AUDIO_FEATURE_PARAMS] : defaultParams,
-        [ACCESS_TOKEN] : accessToken
+        [ACCESS_TOKEN] : accessToken,
+        [USER_ID] : userId
       };
     }, bubbleUpError);
   };
@@ -70,13 +72,18 @@ function getInitialJukeboxState(accessToken) {
 
 /*
  * Registers the user by adding them to DB.user.
- * Returns a promise containing a 
+ * Returns a promise containing the complete authCreds object 
  */
 function registerUser(accessToken) {
   return getMe(accessToken).
     then(function(userObject) {
       id = userObject['body']['id'];
-      return db.addUser(id, accessToken);
+      return db.addUser(id, accessToken).then(function() {
+        return {
+          [USER_ID] : id,
+          [ACCESS_TOKEN] : accessToken
+        };
+      }, bubbleUpError);
     }, bubbleUpError);
 }
 
@@ -124,6 +131,9 @@ function getMe(accessToken) {
   return spotifyApi.getMe();
 }
 
+/*
+ * Returns a promise containing json-encoded Recommendations object
+ */
 function getRecommendations(accessToken,
     seedTracks, audioFeatureParams) {
   // Instatiate api instance and set its accessToken
@@ -137,11 +147,25 @@ function getRecommendations(accessToken,
     this['target_' + key] = audioFeatureParams[key];
   }, options);
 
-  console.log(options);
-
   // Return recommendations wrapped in a promise
   return spotifyApi.getRecommendations(options);
 }
+
+/*
+ * Returns a promise containing json-encoded PLaylist object
+ */
+function createPlaylist(accessToken, userId, name) {
+  // Instatiate api instance and set its accessToken
+  var spotifyApi = new SpotifyWebApi();
+  spotifyApi.setAccessToken(accessToken);
+
+  // Use Jukebox as name if no name supplied
+  if (name === undefined || name == '') name = 'Jukebox';
+
+  // Create playlist and return object wrapped in a promise
+  return spotifyApi.createPlaylist(userId, name);
+}
+
 /****************** Helpers ********************/
 
 /*
@@ -278,7 +302,7 @@ module.exports = {
  */
 function main() {
   
-  // Set access token for example calls
+  // Set access token and user id for example calls
   var accessToken = '';
 
   // Template callback
@@ -296,7 +320,6 @@ function main() {
    *
    * getInitialJukeboxState(accessToken).then(callback, callback);
    */
-  
 }
 
 if (require.main === module) {

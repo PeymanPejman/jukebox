@@ -16,9 +16,10 @@ service AppService {
   rpc GetInitialJukeboxState(AuthCreds) returns (JukeboxState) {}
   
   /*
-   * Registers the user with given Spotify Auth info in Jukebox database
+   * Registers the user with given Spotify Auth info in Jukebox database.
+   * Returns the complete AuthCreds object.
    */
-  rpc RegisterUser(AuthCreds) returns (GenResponse) {}
+  rpc RegisterUser(AuthCreds) returns (AuthCreds) {}
 }
 
 /*
@@ -26,6 +27,7 @@ service AppService {
  */ 
 message AuthCreds {
   string accessToken = 1;
+  string userId = 2;
 }
 
 /*
@@ -35,8 +37,9 @@ message JukeboxState {
   repeated SeedTrack seedTracks = 1;
   AudioFeatureParams audioFeatureParams = 2; 
   string accessToken = 3;
-  int32 playlistId = 4;
-  string playlistUri = 5;
+  string userId = 4;
+  int32 playlistId = 5;
+  string playlistUri = 6;
 }
 
 /*
@@ -59,13 +62,6 @@ message AudioFeatureParams {
   float energy = 3;
   float tempo = 4;
   float valence = 5; 
-}
-
-/*
- * Represents generic RPC response with optional message;
- */
-message GenResponse {
-  string message = 1;
 }
 
 /********************* HandshakeService Entities *********************/
