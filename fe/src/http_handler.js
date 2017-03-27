@@ -5,13 +5,20 @@ var CLIENT_ID = process.env.CLIENT_ID || 'c99f31ef396d40ffb498f24d1803b17f',
     FE_HTTP_HOST = process.env.FE_HTTP_HOST || 'http://jukebox.life',
     CLIENT_SECRET = process.env.CLIENT_SECRET || fatal("No CLIENT_SECRET"),
     IS_PROD = process.env.ENVIRONMENT == 'production';
+
+// JukeboxState member fields
+const SEED_TRACKS = 'seedTracks';
+const AUDIO_FEATURE_PARAMS = 'audioFeatureParams';
+const ACCESS_TOKEN = 'accessToken';
+const USER_ID = 'userId';
+
 /*  
  * Redirects user to Spotify authroization endpoint
  */
 exports.home = function (req, res) {
   
   // Set scopes, response type, and redirect uri
-  var scopes = 'user-top-read';
+  var scopes = 'user-top-read playlist-modify-public';
   var responseType = 'code';
   var redirectUri = FE_HTTP_HOST + '/auth-callback';
 
@@ -120,9 +127,10 @@ function getAccessCodeCallback(res, error, response, body) {
     accessToken = body.access_token; 
 
     // Make RPC to register user
-    appClient.registerUser(accessToken, function() {
+    appClient.registerUser(accessToken, function(err, authCreds) {
       // Make RPC to obtain initial Jukebox state
-      appClient.getInitialJukeboxState(accessToken, function(err, resp) {
+      userId = authCreds[USER_ID];
+      appClient.getInitialJukeboxState(accessToken, userId, function(err, resp) {
         echoBack(err, resp, res);
       });
     });
