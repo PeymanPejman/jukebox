@@ -74,7 +74,7 @@ message AudioFeatureParams {
  */
 message Jukebox {
   string playlistUri = 1;
-  string playlistId = 2;
+  int32 playlistId = 2;
   string accessToken = 3;
 }
 

@@ -51,7 +51,7 @@ function generateJukebox(accessToken, userId,
     [ACCESS_TOKEN] : accessToken,
     [USER_ID] : userId,
     [AUDIO_FEATURE_PARAMS] : audioFeatureParams,
-    [SEED_TRACKS] : null 
+    [SEED_TRACKS] : seedTracks 
   };
 
   appClient.generateJukebox(jukeboxState, callback);
@@ -80,7 +80,7 @@ function main() {
   console.log("Contacting " + HOST + ":" + PORT);
 
   // Set access token for example requests
-  accessToken = 'BQDATAzOF95WHaREvT4sHIHf9pe0uw9NVfJikt2FFvoBvtwz4BDI7pqDV0u4k3c6YzN5D0D6WqdG1lI_D_6PADlRrlIYJk9M5G2RtK5u7MTR8Excmw08-pLjlmDZXb_exQy5AJ0kvVRmQlrPQdyhMiD-A5VnILi-ZxdiTKOxNJaOdWLcRLhRM4jAG0hluCZhsA'; 
+  accessToken = 'BQBdacASqrPaP-wdX9foze985Ry12GHIwaEAvIOddtBGVJJDl6EYs-QfJG7PWuYZfg5UgHi2rAXVSm-CS3evzLnUz9IJkWtmcA4vL9TIjM1r7BgP5R_YDLqmVpgyLX0Jd5elKrVpkAG9TOo8LDvcZsq6H8BM_2IRh0MauQRcuGumgQUXvzsyuWGBbdDDXMzrtQ';
 	userId = '124907240';
   
   // Create template callback
@@ -101,7 +101,7 @@ function main() {
    * getInitialJukeboxState(accessToken, userId, callback);
    */
   
-  generateJukebox(accessToken, userId, {'energy': .6}, ['6VwBbL8CzPiC4QV66ay7oR'], callback);
+  generateJukebox(accessToken, userId, {'energy': .6}, [{'uri': '6VwBbL8CzPiC4QV66ay7oR'}], callback);
 }
 
 if (require.main === module) main();

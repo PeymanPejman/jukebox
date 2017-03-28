@@ -7,14 +7,23 @@ var HOST = '0.0.0.0';
 var grpc = require('grpc');
 var proto = grpc.load(PROTO_PATH).app;
 
+// Jukebox proto fields
+const SEED_TRACKS = 'seedTracks';
+const AUDIO_FEATURE_PARAMS = 'audioFeatureParams';
+const ACCESS_TOKEN = 'accessToken';
+const USER_ID = 'userId';
+
 /**************** AppService RPC methods  *****************/
 
 /*
- * Implements the GetInitialJukeboxState RPC method
+ * Stub for the GetInitialJukeboxState RPC method
  */
 function getInitialJukeboxState(call, callback) {
-  accessToken = call.request.accessToken;
-  userId = call.request.userId;
+
+  // Unmarshall arguments
+  var accessToken = call.request[ACCESS_TOKEN];
+  var userId = call.request[USER_ID];
+
   console.log('Received GetInitialJukeboxState RPC for user ' +  userId + 
       ' with access token : ' + accessToken);
 
@@ -29,11 +38,14 @@ function getInitialJukeboxState(call, callback) {
 }  
 
 /*
- * Implements the RegisterUser RPC method
+ * Stub for the RegisterUser RPC method
  */
 function registerUser(call, callback) {
-  console.log('Received RegisterUser RPC with access token : '
-      + call.request.accessToken);
+  
+  // Unmarshall arguments
+  var accessToken = call.request[ACCESS_TOKEN];
+
+  console.log('Received RegisterUser RPC with access token : ' + accessToken);
 
   app.registerUser(call.request.accessToken).
     then(function(authCreds) {
@@ -45,30 +57,39 @@ function registerUser(call, callback) {
         callback(err, null);
       } catch(e) {
         console.log(e);
-        // Because of bug in gRPC implementation cannot marshall error object
+        // Because of bug in gRPC implementation cannot marshall some error objects
         callback(1, null);
       }
     }); 
 }  
 
-// TODO: extract literals
+/*
+ * Stub for the GenerateJukebox RPC method
+ */
 function generateJukebox(call, callback) {
-  userId = call.request.userId;
-  accessToken = call.request.accessToken;
-  seedTracks = call.request.seedTracks;
-  audioFeatureParams = call.request.audioFeatureParams
+
+  // Unmarshall arguments
+  var userId = call.request[USER_ID];
+  var accessToken = call.request[ACCESS_TOKEN];
+  var seedTracks = call.request[SEED_TRACKS];
+  var audioFeatureParams = call.request[AUDIO_FEATURE_PARAMS];
+
   console.log('Received GenerateJukebox RPC for user ' 
       + userId + 'with access token : ' + accessToken);
 
   app.generateJukebox(accessToken, userId, seedTracks, audioFeatureParams).
-    then(function(a) {
-      console.log(a); callback(a); 
-    }, function(a) { console.log(a); callback(a)});
+    then(function(jukebox) {
+      console.log(jukebox);
+      callback(null, jukebox);
+    }, function(error) {
+      console.log(error);
+      callback(error, null);
+    });
 }
 /**************** HandshakeService RPC methods  *****************/
 
 /*
- * Implements the Shake RPC method for testing purposes 
+ * Stub for the Shake RPC method for testing purposes 
  */
 function shake(call, callback) {
   console.log('Request received with name: ' + call.request.name);

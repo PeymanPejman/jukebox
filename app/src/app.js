@@ -26,6 +26,8 @@ const USER_ID = 'userId';
 const PLAYLIST_ID = 'playlistId';
 const PLAYLIST_URI = 'playlistUri';
 
+const DEFAULT_PLAYLIST_NAME = 'Jukebox';
+
 /************** Exported Routines ****************/
 
 /*
@@ -94,7 +96,13 @@ function registerUser(accessToken) {
  */
 // TODO
 function generateJukebox(accessToken, userId, 
-    seedTracks, audioFeatureParams) {
+    seedTracksObj, audioFeatureParams) {
+
+  // Get Seed tracks
+  var seedTracks = [];
+  seedTracksObj.forEach(function(track) {
+    seedTracks.push(track['uri']);
+  });
 
   // Get recommendations
   return getRecommendations(accessToken, seedTracks, audioFeatureParams).
@@ -102,22 +110,21 @@ function generateJukebox(accessToken, userId,
 
       // Prune recommendations object
       tracks = pruneTracks(recommendationsObj.body.tracks);
-      console.log(tracks);
 
       // Create playlist for user
       return createPlaylist(accessToken, userId, DEFAULT_PLAYLIST_NAME).
         then(function(playlist) {
-          
+
           // Add playlist to database
           uri = playlist.body.uri;
-          return db.addPlaylist(uri).then(function(playlistId) {
+          return db.addPlaylist(userId, uri).then(function(playlistId) {
             
             // TODO: Add tracks to Spotify playlist
             // Return Jukebox object
             return {
-              PLAYLIST_URI : uri,
-              PLAYLIST_ID : playlistId,
-              ACCESS_TOKEN : accessToken
+              [PLAYLIST_URI] : uri,
+              [PLAYLIST_ID] : playlistId,
+              [ACCESS_TOKEN] : accessToken
             };
 
           }, bubbleUpError);
