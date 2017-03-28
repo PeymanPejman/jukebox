@@ -20,6 +20,13 @@ service AppService {
    * Returns the complete AuthCreds object.
    */
   rpc RegisterUser(AuthCreds) returns (AuthCreds) {}
+
+  /*
+   * Given user-tuned JukeboxState, returns final version of
+   * the Jukebox object
+   */
+  rpc GenerateJukebox(JukeboxState) returns (Jukebox) {}
+
 }
 
 /*
@@ -38,8 +45,6 @@ message JukeboxState {
   AudioFeatureParams audioFeatureParams = 2; 
   string accessToken = 3;
   string userId = 4;
-  int32 playlistId = 5;
-  string playlistUri = 6;
 }
 
 /*
@@ -62,6 +67,15 @@ message AudioFeatureParams {
   float energy = 3;
   float tempo = 4;
   float valence = 5; 
+}
+
+/*
+ * Describes a final Jukebox instance
+ */
+message Jukebox {
+  string playlistUri = 1;
+  string playlistId = 2;
+  string accessToken = 3;
 }
 
 /********************* HandshakeService Entities *********************/

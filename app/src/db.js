@@ -213,7 +213,7 @@ function addPlaylist(userId, uri) {
                   return reject(error);
                 }
                 id = results[0]['AUTO_INCREMENT']
-                return fulfill("Playlist " + id + " with uri " + uri + " added");
+                return fulfill(id);
               });
     });
   });

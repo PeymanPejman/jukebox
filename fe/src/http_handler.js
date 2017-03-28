@@ -128,6 +128,9 @@ function getAccessCodeCallback(res, error, response, body) {
 
     // Make RPC to register user
     appClient.registerUser(accessToken, function(err, authCreds) {
+			if (err) {
+				return echoBack(err, null, res);
+			}	
       // Make RPC to obtain initial Jukebox state
       userId = authCreds[USER_ID];
       appClient.getInitialJukeboxState(accessToken, userId, function(err, resp) {

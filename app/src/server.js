@@ -51,6 +51,20 @@ function registerUser(call, callback) {
     }); 
 }  
 
+// TODO: extract literals
+function generateJukebox(call, callback) {
+  userId = call.request.userId;
+  accessToken = call.request.accessToken;
+  seedTracks = call.request.seedTracks;
+  audioFeatureParams = call.request.audioFeatureParams
+  console.log('Received GenerateJukebox RPC for user ' 
+      + userId + 'with access token : ' + accessToken);
+
+  app.generateJukebox(accessToken, userId, seedTracks, audioFeatureParams).
+    then(function(a) {
+      console.log(a); callback(a); 
+    }, function(a) { console.log(a); callback(a)});
+}
 /**************** HandshakeService RPC methods  *****************/
 
 /*
@@ -77,7 +91,8 @@ function main() {
   server.addProtoService(proto.HandshakeService.service, {shake: shake});
   server.addProtoService(proto.AppService.service, {
     getInitialJukeboxState: getInitialJukeboxState,
-    registerUser: registerUser
+    registerUser: registerUser,
+    generateJukebox: generateJukebox
   });
 
   // Do initialization for app module
