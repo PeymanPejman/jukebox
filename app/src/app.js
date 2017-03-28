@@ -18,11 +18,16 @@ const SEED_TRACK_NAME = 'name';
 const SEED_TRACK_URI = 'uri';
 const SEED_TRACK_IMAGE = 'image';
 
-// JukeboxState member fields
+// Jukebox proto fields
 const SEED_TRACKS = 'seedTracks';
 const AUDIO_FEATURE_PARAMS = 'audioFeatureParams';
 const ACCESS_TOKEN = 'accessToken';
 const USER_ID = 'userId';
+const PLAYLIST_ID = 'playlistId';
+const PLAYLIST_URI = 'playlistUri';
+
+const DEFAULT_PLAYLIST_NAME = 'Jukebox';
+const ID = 'id';
 
 /************** Exported Routines ****************/
 
@@ -47,7 +52,7 @@ function getInitialJukeboxState(accessToken, userId) {
 
   // Gets seed tracks and raw AudioFeatures object
   var getSeedsAndFeatures = function(topTracksObj) {
-    seedTracks = getSeedTracks(topTracksObj);
+    seedTracks = pruneTracks(topTracksObj.body.items);
     tracksIds = extractTracksIds(topTracksObj);
     return getAudioFeatures(accessToken, tracksIds)
   };
@@ -77,7 +82,7 @@ function getInitialJukeboxState(accessToken, userId) {
 function registerUser(accessToken) {
   return getMe(accessToken).
     then(function(userObject) {
-      id = userObject['body']['id'];
+      id = userObject.body[ID];
       return db.addUser(id, accessToken).then(function() {
         return {
           [USER_ID] : id,
@@ -85,6 +90,54 @@ function registerUser(accessToken) {
         };
       }, bubbleUpError);
     }, bubbleUpError);
+}
+
+/*
+ * Returns a complete Jukebox object 
+ */
+function generateJukebox(accessToken, userId, 
+    seedTracksObj, audioFeatureParams) {
+
+  // Get Seed tracks
+  var seedTracks = [];
+  seedTracksObj.forEach(function(track) {
+    seedTracks.push(track[SEED_TRACK_URI]);
+  });
+
+  // Get recommendations
+  return getRecommendations(accessToken, seedTracks, audioFeatureParams).
+    then(function(recommendationsObj) {
+
+      // Prune recommendations object
+      var tracks = [];
+      recommendationsObj.body.tracks.forEach(function(track) {
+        tracks.push(track[SEED_TRACK_URI]); 
+      });
+
+      // Create playlist for user
+      return createPlaylist(accessToken, userId, DEFAULT_PLAYLIST_NAME).
+        then(function(playlist) {
+
+          // Add tracks to playlist
+          var spotifyPlaylistId = playlist.body.id;
+          return addTracksToPlaylist(accessToken, userId, spotifyPlaylistId, tracks).
+            then(function() {
+
+              // Add playlist to database
+              playlistUri = playlist.body.uri;
+              return db.addPlaylist(userId, playlistUri).then(function(playlistId) {
+                
+                // Return Jukebox object
+                return {
+                  [PLAYLIST_URI] : playlistUri,
+                  [PLAYLIST_ID] : playlistId,
+                  [ACCESS_TOKEN] : accessToken
+                };
+
+            }, bubbleUpError);
+          }, bubbleUpError);
+        }, bubbleUpError);
+  }, bubbleUpError);
 }
 
 /************** Spotify API Wrappers ****************/
@@ -143,16 +196,18 @@ function getRecommendations(accessToken,
   // Build options
   var options = {};
   options['seed_tracks'] = seedTracks;
-  Object.keys(audioFeatureParams).forEach(function(key, index, _array) {
-    this['target_' + key] = audioFeatureParams[key];
-  }, options);
+  if (audioFeatureParams != undefined) {
+    Object.keys(audioFeatureParams).forEach(function(key, index, _array) {
+      this['target_' + key] = audioFeatureParams[key];
+    }, options);
+  }
 
   // Return recommendations wrapped in a promise
   return spotifyApi.getRecommendations(options);
 }
 
 /*
- * Returns a promise containing json-encoded PLaylist object
+ * Returns a promise containing json-encoded Playlist object
  */
 function createPlaylist(accessToken, userId, name) {
   // Instatiate api instance and set its accessToken
@@ -164,6 +219,20 @@ function createPlaylist(accessToken, userId, name) {
 
   // Create playlist and return object wrapped in a promise
   return spotifyApi.createPlaylist(userId, name);
+}
+
+/*
+ * Returns a promise containing json-encoded Snapshot object
+ */
+function addTracksToPlaylist(accessToken, userId, 
+    playlistId, tracks) {
+  // Instatiate api instance and set its accessToken
+  var spotifyApi = new SpotifyWebApi();
+  spotifyApi.setAccessToken(accessToken);
+
+  // Create playlist and return object wrapped in a promise
+  return spotifyApi.addTracksToPlaylist(userId, 
+      playlistId, tracks);
 }
 
 /****************** Helpers ********************/
@@ -207,23 +276,24 @@ function getDefaultJukeboxParams(tracksFeatures) {
 }
 
 /*
- * Returns select fields of potential seed tracks
+ * Returns select fields of a list of tracks
+ * TODO: Check existence of each layer before setting 
  */
-function getSeedTracks(topTracksObj) {
-  seedTracks = [];
+function pruneTracks(tracks) {
+  prunedTracks= [];
 
   // Record select fields of each track in seedTracks
-  topTracksObj.body.items.forEach(function(track){
+  tracks.forEach(function(track){
     tempTrack = {};
     tempTrack[SEED_TRACK_NAME] = track[SEED_TRACK_NAME];
     tempTrack[SEED_TRACK_URI] = track[SEED_TRACK_URI];
     tempTrack[SEED_TRACK_ALBUM] = track[SEED_TRACK_ALBUM]['name']; 
     tempTrack[SEED_TRACK_ARTIST] = track['artists'][0]['name'];
     tempTrack[SEED_TRACK_IMAGE] = track[SEED_TRACK_ALBUM]['images'][0]['url'];
-    seedTracks.push(tempTrack);
+    prunedTracks.push(tempTrack);
   });
 
-  return seedTracks;
+  return prunedTracks;
 }
 
 /* 
@@ -294,7 +364,8 @@ module.exports = {
   // Routines
   init: init,
   getInitialJukeboxState: getInitialJukeboxState,
-  registerUser: registerUser
+  registerUser: registerUser,
+  generateJukebox: generateJukebox
 };
 
 /*

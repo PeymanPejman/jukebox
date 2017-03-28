@@ -18,7 +18,7 @@ const USER_ID = 'userId';
 exports.home = function (req, res) {
   
   // Set scopes, response type, and redirect uri
-  var scopes = 'user-top-read playlist-modify-public';
+  var scopes = 'user-top-read playlist-modify-public playlist-modify-public';
   var responseType = 'code';
   var redirectUri = FE_HTTP_HOST + '/auth-callback';
 
@@ -128,6 +128,9 @@ function getAccessCodeCallback(res, error, response, body) {
 
     // Make RPC to register user
     appClient.registerUser(accessToken, function(err, authCreds) {
+			if (err) {
+				return echoBack(err, null, res);
+			}	
       // Make RPC to obtain initial Jukebox state
       userId = authCreds[USER_ID];
       appClient.getInitialJukeboxState(accessToken, userId, function(err, resp) {
