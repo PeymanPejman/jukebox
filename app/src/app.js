@@ -202,7 +202,6 @@ function getRecommendations(accessToken,
     }, options);
   }
 
-  console.log(options);
   // Return recommendations wrapped in a promise
   return spotifyApi.getRecommendations(options);
 }
@@ -374,7 +373,7 @@ module.exports = {
  */
 function main() {
   
-  // Set access token for example calls
+  // Set access token and user id for example calls
   var accessToken = '';
 
   // Template callback
