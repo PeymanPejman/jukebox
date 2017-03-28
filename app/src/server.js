@@ -74,8 +74,9 @@ function generateJukebox(call, callback) {
   var seedTracks = call.request[SEED_TRACKS];
   var audioFeatureParams = call.request[AUDIO_FEATURE_PARAMS];
 
-  console.log('Received GenerateJukebox RPC for user ' 
-      + userId + 'with access token : ' + accessToken);
+  console.log('Received GenerateJukebox RPC for user ' + userId + 
+      'with access token : ' + accessToken + ', seed tracks ' + JSON.stringify(seedTracks) 
+      + 'and feature params ' + JSON.stringify(audioFeatureParams));
 
   app.generateJukebox(accessToken, userId, seedTracks, audioFeatureParams).
     then(function(jukebox) {

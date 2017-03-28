@@ -18,7 +18,7 @@ const USER_ID = 'userId';
 exports.home = function (req, res) {
   
   // Set scopes, response type, and redirect uri
-  var scopes = 'user-top-read playlist-modify-public';
+  var scopes = 'user-top-read playlist-modify-public playlist-modify-public';
   var responseType = 'code';
   var redirectUri = FE_HTTP_HOST + '/auth-callback';
 

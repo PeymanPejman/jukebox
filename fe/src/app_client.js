@@ -80,8 +80,8 @@ function main() {
   console.log("Contacting " + HOST + ":" + PORT);
 
   // Set access token for example requests
-  accessToken = 'BQBdacASqrPaP-wdX9foze985Ry12GHIwaEAvIOddtBGVJJDl6EYs-QfJG7PWuYZfg5UgHi2rAXVSm-CS3evzLnUz9IJkWtmcA4vL9TIjM1r7BgP5R_YDLqmVpgyLX0Jd5elKrVpkAG9TOo8LDvcZsq6H8BM_2IRh0MauQRcuGumgQUXvzsyuWGBbdDDXMzrtQ';
-	userId = '124907240';
+  accessToken = '';
+	userId = '';
   
   // Create template callback
   callback = function(err, resp) {
@@ -101,7 +101,13 @@ function main() {
    * getInitialJukeboxState(accessToken, userId, callback);
    */
   
-  generateJukebox(accessToken, userId, {'energy': .6}, [{'uri': '6VwBbL8CzPiC4QV66ay7oR'}], callback);
+  /*
+   * Example usage of generateJukebox()
+   *
+   * var audioFeatures = {'energy' : .6};
+   * var seedTracks = [{'uri': '6VwBbL8CzPiC4QV66ay7oR'}]; 
+   * generateJukebox(accessToken, userId, audioFeatures, seedTracks, callback);
+   */
 }
 
 if (require.main === module) main();

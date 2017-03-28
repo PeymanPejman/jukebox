@@ -81,7 +81,7 @@ function getInitialJukeboxState(accessToken, userId) {
 function registerUser(accessToken) {
   return getMe(accessToken).
     then(function(userObject) {
-      id = userObject['body']['id'];
+      id = userObject.body[TRACK_ID];
       return db.addUser(id, accessToken).then(function() {
         return {
           [USER_ID] : id,
@@ -101,7 +101,7 @@ function generateJukebox(accessToken, userId,
   // Get Seed tracks
   var seedTracks = [];
   seedTracksObj.forEach(function(track) {
-    seedTracks.push(track['uri']);
+    seedTracks.push(track[SEED_TRACK_URI]);
   });
 
   // Get recommendations
@@ -109,24 +109,32 @@ function generateJukebox(accessToken, userId,
     then(function(recommendationsObj) {
 
       // Prune recommendations object
-      tracks = pruneTracks(recommendationsObj.body.tracks);
+      var tracks = [];
+      recommendationsObj.body.tracks.forEach(function(track) {
+        tracks.push(track[SEED_TRACK_URI]); 
+      });
 
       // Create playlist for user
       return createPlaylist(accessToken, userId, DEFAULT_PLAYLIST_NAME).
         then(function(playlist) {
 
-          // Add playlist to database
-          uri = playlist.body.uri;
-          return db.addPlaylist(userId, uri).then(function(playlistId) {
-            
-            // TODO: Add tracks to Spotify playlist
-            // Return Jukebox object
-            return {
-              [PLAYLIST_URI] : uri,
-              [PLAYLIST_ID] : playlistId,
-              [ACCESS_TOKEN] : accessToken
-            };
+          // Add tracks to playlist
+          var spotifyPlaylistId = playlist.body.id;
+          return addTracksToPlaylist(accessToken, userId, spotifyPlaylistId, tracks).
+            then(function() {
 
+              // Add playlist to database
+              playlistUri = playlist.body.uri;
+              return db.addPlaylist(userId, playlistUri).then(function(playlistId) {
+                
+                // Return Jukebox object
+                return {
+                  [PLAYLIST_URI] : playlistUri,
+                  [PLAYLIST_ID] : playlistId,
+                  [ACCESS_TOKEN] : accessToken
+                };
+
+            }, bubbleUpError);
           }, bubbleUpError);
         }, bubbleUpError);
   }, bubbleUpError);
@@ -194,12 +202,13 @@ function getRecommendations(accessToken,
     }, options);
   }
 
+  console.log(options);
   // Return recommendations wrapped in a promise
   return spotifyApi.getRecommendations(options);
 }
 
 /*
- * Returns a promise containing json-encoded PLaylist object
+ * Returns a promise containing json-encoded Playlist object
  */
 function createPlaylist(accessToken, userId, name) {
   // Instatiate api instance and set its accessToken
@@ -211,6 +220,20 @@ function createPlaylist(accessToken, userId, name) {
 
   // Create playlist and return object wrapped in a promise
   return spotifyApi.createPlaylist(userId, name);
+}
+
+/*
+ * Returns a promise containing json-encoded Snapshot object
+ */
+function addTracksToPlaylist(accessToken, userId, 
+    playlistId, tracks) {
+  // Instatiate api instance and set its accessToken
+  var spotifyApi = new SpotifyWebApi();
+  spotifyApi.setAccessToken(accessToken);
+
+  // Create playlist and return object wrapped in a promise
+  return spotifyApi.addTracksToPlaylist(userId, 
+      playlistId, tracks);
 }
 
 /****************** Helpers ********************/
