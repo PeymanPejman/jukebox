@@ -79,9 +79,9 @@ module.exports = {
 function main() {
   console.log("Contacting " + HOST + ":" + PORT);
 
-  // Set access token for example requests
-  accessToken = '';
-	userId = '';
+  // Set access token and user id for example requests
+  var accessToken = '';
+  var userId = '';
   
   // Create template callback
   callback = function(err, resp) {

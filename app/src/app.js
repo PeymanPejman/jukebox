@@ -27,6 +27,7 @@ const PLAYLIST_ID = 'playlistId';
 const PLAYLIST_URI = 'playlistUri';
 
 const DEFAULT_PLAYLIST_NAME = 'Jukebox';
+const ID = 'id';
 
 /************** Exported Routines ****************/
 
@@ -81,7 +82,7 @@ function getInitialJukeboxState(accessToken, userId) {
 function registerUser(accessToken) {
   return getMe(accessToken).
     then(function(userObject) {
-      id = userObject.body[TRACK_ID];
+      id = userObject.body[ID];
       return db.addUser(id, accessToken).then(function() {
         return {
           [USER_ID] : id,
@@ -94,7 +95,6 @@ function registerUser(accessToken) {
 /*
  * Returns a complete Jukebox object 
  */
-// TODO
 function generateJukebox(accessToken, userId, 
     seedTracksObj, audioFeatureParams) {
 
@@ -374,7 +374,7 @@ module.exports = {
  */
 function main() {
   
-  // Set access token and user id for example calls
+  // Set access token for example calls
   var accessToken = '';
 
   // Template callback
