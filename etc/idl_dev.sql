@@ -1,5 +1,5 @@
 -- Create the development database
-CREATE DATABASE jb_dev;
+CREATE DATABASE IF NOT EXISTS jb_dev;
 
 --Use development database
 USE jb_dev;
@@ -57,9 +57,7 @@ CREATE TABLE IF NOT EXISTS track_features (
   `danceability` FLOAT,
   `energy` FLOAT,
   `tempo` FLOAT,
-  `valence` FLOAT,
-  FOREIGN KEY (`track_uri`) REFERENCES top_track(`track_uri`)
-    ON DELETE CASCADE); 
+  `valence` FLOAT); 
 
 /* Create Playlist table
 */
