@@ -24,7 +24,7 @@ Here are the addresses for the live production services and what ports they expe
 | Service        | Service ID           | Protocol | IP              | Port  |
 |:--------------:|:--------------------:|:--------:|:---------------:|------:|
 | Frontend       | jb-fe-prod           | HTTP     | 104.196.62.203  | 80    |
-| Application    | jb-app-prod          | gRPC     | 104.154.209.114 | 34000 |
+| Application    | jb-app-prod          | gRPC     | 35.185.41.242   | 34000 |
 | Genius         | jb-gen-prod          | gRPC     | 104.196.209.40  | 35000 |
 | MySql          | jb-sql-dev           | TCP      | 104.196.23.18   | 3306  |
 
@@ -39,7 +39,7 @@ Each of the four services live in their own containers. To experiment with any o
 
 If you're confused by the third step read this: when you run a service locally, you must tell it where to look for the other services. There are usually 2 mechanisms for doing this 1) environment variables 2) command-line arguments. I have chosen method 1. So for example, if I wanted to run FE locally, I could either point it to the live production APP service or run the APP service locally (in a docker container). Since it's easier, say I want to simply point it to the live APP service (hosted on a GKE cluster). I would run 
 ```{r, engine='bash', count_lines}
-export APP_RPC_HOST=104.196.62.203
+export APP_RPC_HOST=35.185.41.242
 ``` 
 Which would export as an environment variable the location of the APP RPC server. I'd then build the application 
 ```{r, engine='bash', count_lines}
