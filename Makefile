@@ -1,5 +1,11 @@
 GEN_PROTOS=./gen/src/
 
+build-fe: .FORCE
+	cp -rf protos fe
+
+build-app: .FORCE
+	cp -rf protos app
+
 all: build
 
 build: protos
