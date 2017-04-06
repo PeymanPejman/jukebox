@@ -10,3 +10,6 @@
 
 # Ignore compiled *.css
 fe/src/static/stylesheets/*
+
+# Ignore Kubernetes options
+k8/options
