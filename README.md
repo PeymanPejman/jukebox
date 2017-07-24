@@ -1,6 +1,8 @@
 # Jukebox
 [![Build Status](https://travis-ci.org/PedramPejman/jukebox.svg?branch=master)](https://travis-ci.org/PedramPejman/jukebox)
 
+*Update (7/24/2017): Because of Google Cloud Platform credit issues, the live Jukebox services (both staging and production environments) have been shut down. I will update this page once a sustainable short-term funding strategy has been devised and the live services are back up and running.*
+
 ## Purpose
 
 This project has two main purposes
