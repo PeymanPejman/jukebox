@@ -1,5 +1,6 @@
 # Use Dockerized infrastructure
 sudo: false
+group: deprecated-2017Q4
 
 # Use node_js environnement
 language: node_js
@@ -34,9 +35,9 @@ env:
     - FE_DIR=fe
     - GEN_DIR=gen
       # Kubernetes configuration
-    - CLOUDSDK_COMPUTE_ZONE=us-east1-d
-    - PROJECT_NAME=jukebox-161404
-    - CLUSTER_NAME_PRD=jukebox-alpha
+    - CLOUDSDK_COMPUTE_ZONE=us-west1-a
+    - PROJECT_NAME=pedram-demo-0
+    - CLUSTER_NAME_PRD=cluster-1
       # Image names
     - APP_IMAGE_NAME=jb-app
     - FE_IMAGE_NAME=jb-fe
@@ -50,11 +51,15 @@ env:
     - FE_DEPLOYMENT_NAME=jb-fe
     - GEN_DEPLOYMENT_NAME=jb-gen
 
+before_install:
+    # Workaround for travis issue 8363 
+  - pyenv global system 3.5
+
 # Build services
 install:
     # Install grpcio so that we can build protos for Genius
   - export PATH=$HOME/.local/bin:$PATH
-  - pip3 install -r ${GEN_DIR}/requirements.txt --user `whoami`
+  - pip install -r ${GEN_DIR}/requirements.txt --user `whoami`
     # Build project-wide dependencies
   - make build
     # Build each service individually
@@ -68,7 +73,7 @@ script:
 
 # Set up for deployment
 before_deploy:
-  - if [ ! -d "$HOME/google-cloud-sdk/bin" ]; then rm -rf $HOME/google-cloud-sdk; export CLOUDSDK_CORE_DISABLE_PROMPTS=1; curl https://sdk.cloud.google.com | bash; fi
+  - if [ ! -d "$HOME/google-cloud-sdk/bin" ]; then rm -rf $HOME/google-cloud-sdk; export CLOUDSDK_CORE_DISABLE_PROMPTS=1; curl https://sdk.cloud.google.com | bash --version; fi
   - source /home/travis/google-cloud-sdk/path.bash.inc
   - gcloud --quiet version
   - gcloud --quiet components update
@@ -80,4 +85,4 @@ deploy:
     script: etc/deploy.sh
     skip_cleanup: true
     on:
-      branch: master
+      branch: travis

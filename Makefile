@@ -18,7 +18,7 @@ build: protos
 # Compiles genius protos and marks it as a python package directory
 protos: .FORCE
 	echo fe app | xargs -n 1 cp -rf protos
-	python3 -m grpc_tools.protoc -I ./protos --python_out=$(GEN_PROTOS) \
+	python -m grpc_tools.protoc -I ./protos --python_out=$(GEN_PROTOS) \
 		--grpc_python_out=$(GEN_PROTOS) ./protos/genius.proto 
 
 # Creates a Docker network for local integration
