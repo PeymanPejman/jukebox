@@ -51,7 +51,7 @@ exports.home = function (req, res) {
       '&client_id=' + CLIENT_ID +
       '&scope=' + encodeURIComponent(scopes) +
       '&state=' + ENVIRONMENT  +
-      '&redirect_uri=' + encodeURIComponent(redirectUri));
+      '&redirect_uri=' + redirectUri);
 };
 
 /*  
