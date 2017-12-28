@@ -4,9 +4,8 @@
   <groupId>life.jukebox</groupId>
   <artifactId>yoda</artifactId>
   <packaging>jar</packaging>
-  <version>1.0-SNAPSHOT</version>
+  <version>0.1-SNAPSHOT</version>
   <name>yoda</name>
-  <url>http://maven.apache.org</url>
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
