@@ -1,4 +1,4 @@
-package life.jukebox;
+package life.jukebox.yoda;
 
 public class App 
 {
