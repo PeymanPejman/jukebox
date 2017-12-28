@@ -15,14 +15,6 @@ cache:
 services:
   - docker
 
-# Install python3 packages 
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - python3
- 
 # Set envrionment variables
 env:
   global:
@@ -52,13 +44,12 @@ env:
 
 # Build services
 install:
-    # Install grpcio so that we can build protos for Genius
-    # pip3 install -r ${GEN_DIR}/requirements.txt --user `whoami`
-    # Build protos for FE and APP
-  - make build-fe && make build-app
+    # Build protos for all services
+  - make build
     # Build each service individually
   - docker build -t ${AUTHOR}/${APP_IMAGE_NAME}:$TRAVIS_BUILD_NUMBER -f ${APP_DIR}/Dockerfile ${APP_DIR} 
   - docker build -t ${AUTHOR}/${FE_IMAGE_NAME}:$TRAVIS_BUILD_NUMBER -f ${FE_DIR}/Dockerfile ${FE_DIR}
+  - docker build -t ${AUTHOR}/${GEN_IMAGE_NAME}:$TRAVIS_BUILD_NUMBER -f ${GEN_DIR}/Dockerfile ${GEN_DIR}
 
 # Run unit tests
 script:
