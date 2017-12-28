@@ -1,15 +1,15 @@
 # Use java 8 base
 FROM java:8
 
-# Update the kernel and install maven
+# Update package manager and install maven
 RUN apt-get update
 RUN apt-get install -yqq maven
 
-# Create/set the microservice directory
+# Create and set working directory
 RUN mkdir -p /usr/jukebox/yoda
 WORKDIR /usr/jukebox/yoda
 
-# Copy necessary source code and config files
+# Copy project object model and source directory
 COPY pom.xml /usr/jukebox/yoda
 COPY src /usr/jukebox/yoda/src
 
@@ -18,5 +18,5 @@ RUN ["mvn", "dependency:resolve"]
 RUN ["mvn", "verify"]
 RUN ["mvn", "package"]
 
-# Add an ENTRYPOINT to the service
-ENTRYPOINT ["java", "-cp", "target/yoda-0.1-SNAPSHOT.jar", "life.jukebox.App"]
+# Make default entrypoint run App's main
+ENTRYPOINT ["java", "-cp", "target/yoda-0.1-SNAPSHOT.jar", "life.jukebox.yoda.App"]
