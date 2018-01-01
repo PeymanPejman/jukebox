@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package yoda;
+
+/******************** Genius Service Entities *************************/
+
+/*
+ * Yoda service exposing monitoring/checks & balance RPC calls
+ */
+service Yoda {
+  /*
+   * Test RPC method
+   */
+  rpc Shake(HandshakeRequest) returns (HandshakeResponse) {}
+}
+
+message HandshakeRequest {
+  string name = 1;
+}
+
+message HandshakeResponse {
+  string message = 1;
+}
+
