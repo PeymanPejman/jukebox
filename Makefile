@@ -18,7 +18,11 @@ build-gen: .FORCE
 
 # Builds protos for Yoda
 build-yoda: .FORCE	
+<<<<<<< 6a6bfa9d9d990f7bbc856e8152d531972ad89481
 	cp -rf protos jb-yoda
+=======
+	cp -rf protos yoda
+>>>>>>> yoda java
 
 # Builds protos for all services
 build: protos
