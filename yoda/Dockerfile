@@ -19,4 +19,4 @@ RUN ["mvn", "verify"]
 RUN ["mvn", "package"]
 
 # Make default entrypoint run App's main
-ENTRYPOINT ["java", "-cp", "target/yoda-0.1-SNAPSHOT.jar", "life.jukebox.yoda.App"]
+ENTRYPOINT ["java", "-cp", "target/yoda-0.1-SNAPSHOT.jar", "life.jukebox.yoda.HandshakeServer"]
