@@ -9,8 +9,8 @@ import java.util.logging.Logger;
 /**
  * Server that manages startup/shutdown of a {@code Greeter} server.
  */
-public class HandshakeServer {
-  private static final Logger logger = Logger.getLogger(HandshakeServer.class.getName());
+public class YodaGrpcServer {
+  private static final Logger logger = Logger.getLogger(YodaGrpcServer.class.getName());
 
   private Server server;
 
@@ -18,16 +18,17 @@ public class HandshakeServer {
     /* The port on which the server should run */
     int port = 37000;
     server = ServerBuilder.forPort(port)
-        .addService(new YodaImpl())
+        .addService(new YodaService())
         .build()
         .start();
+    
     logger.info("Server started, listening on " + port);
     Runtime.getRuntime().addShutdownHook(new Thread() {
       @Override
       public void run() {
         // Use stderr here since the logger may have been reset by its JVM shutdown hook.
         System.err.println("*** shutting down gRPC server since JVM is shutting down");
-        HandshakeServer.this.stop();
+        YodaGrpcServer.this.stop();
         System.err.println("*** server shut down");
       }
     });
@@ -52,13 +53,12 @@ public class HandshakeServer {
    * Main launches the server from the command line.
    */
   public static void main(String[] args) throws IOException, InterruptedException {
-    final HandshakeServer server = new HandshakeServer();
+    final YodaGrpcServer server = new YodaGrpcServer();
     server.start();
     server.blockUntilShutdown();
   }
 
-  static class YodaImpl extends YodaGrpc.YodaImplBase {
-
+  static class YodaService extends YodaGrpc.YodaImplBase {
     @Override
     public void shake(HandshakeRequest req, StreamObserver<HandshakeResponse> responseObserver) {
       HandshakeResponse reply = HandshakeResponse.newBuilder().setMessage("Hello " + req.getName()).build();
