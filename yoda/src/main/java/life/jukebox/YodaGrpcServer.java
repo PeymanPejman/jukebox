@@ -7,16 +7,17 @@ import java.io.IOException;
 import java.util.logging.Logger;
 
 /**
- * Server that manages startup/shutdown of a {@code Greeter} server.
+ * Server that manages startup/shutdown of a YodaGrpc server.
  */
 public class YodaGrpcServer {
+  private static final int DEFAULT_JB_YODA_SERVICE_PORT = 37000;
+
   private static final Logger logger = Logger.getLogger(YodaGrpcServer.class.getName());
 
   private Server server;
 
   private void start() throws IOException {
-    /* The port on which the server should run */
-    int port = 37000;
+    int port = getPort();
     server = ServerBuilder.forPort(port)
       .addService(new YodaService())
       .build()
@@ -26,7 +27,6 @@ public class YodaGrpcServer {
     Runtime.getRuntime().addShutdownHook(new Thread() {
       @Override
       public void run() {
-        // Use stderr here since the logger may have been reset by its JVM shutdown hook.
         System.err.println("*** shutting down gRPC server since JVM is shutting down");
         YodaGrpcServer.this.stop();
         System.err.println("*** server shut down");
@@ -47,6 +47,11 @@ public class YodaGrpcServer {
     if (server != null) {
       server.awaitTermination();
     }
+  }
+
+  private static int getPort(){
+    return System.getenv("JB_YODA_SERVICE_PORT") != null ? 
+      Integer.parseInt(System.getenv("JB_YODA_SERVICE_PORT")) : DEFAULT_JB_YODA_SERVICE_PORT;
   }
 
   /**

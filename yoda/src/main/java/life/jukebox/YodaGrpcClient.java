@@ -8,15 +8,17 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * A simple client that requests a greeting from the {@link HelloWorldServer}.
+ * A simple client that requests a greeting from the YodaGrpcServer.
  */
 public class YodaGrpcClient {
+  private static final int DEFAULT_JB_YODA_SERVICE_PORT = 37000;
+  private static final String DEFAULT_JB_YODA_SERVICE_HOST = "localhost";
+
   private static final Logger logger = Logger.getLogger(YodaGrpcClient.class.getName());
 
   private final ManagedChannel channel;
   private final YodaGrpc.YodaBlockingStub blockingStub;
 
-  /** Construct client connecting to HelloWorld server at {@code host:port}. */
   public YodaGrpcClient(String host, int port) {
     this(ManagedChannelBuilder.forAddress(host, port)
         // Channels are secure by default (via SSL/TLS). For the example we disable TLS to avoid
@@ -35,7 +37,6 @@ public class YodaGrpcClient {
     channel.shutdown().awaitTermination(5, TimeUnit.SECONDS);
   }
 
-  /** Say hello to server. */
   public void shake(String name) {
     logger.info("Will try to greet " + name + " ...");
     HandshakeRequest request = HandshakeRequest.newBuilder().setName(name).build();
@@ -49,18 +50,21 @@ public class YodaGrpcClient {
     logger.info("Greeting: " + response.getMessage());
   }
 
-  /**
-   * Yoda server. If provided, the first element of {@code args} is the name to use in the
-   * greeting.
-   */
+  private static int getPort(){
+    return System.getenv("JB_YODA_SERVICE_PORT") != null ?
+      Integer.parseInt(System.getenv("JB_YODA_SERVICE_PORT")) : DEFAULT_JB_YODA_SERVICE_PORT;
+  }
+
+  private static String getHost(){
+    return System.getenv("JB_YODA_SERVICE_HOST") != null ?
+      System.getenv("JB_YODA_SERVICE_HOST") : DEFAULT_JB_YODA_SERVICE_HOST;
+  }
+
+
   public static void main(String[] args) throws Exception {
-    YodaGrpcClient client = new YodaGrpcClient("localhost", 37000);
+    YodaGrpcClient client = new YodaGrpcClient(getHost(), getPort());
     try {
-      /* Access a service running on the local machine on port 37000 */
-      String user = "world";
-      if (args.length > 0) {
-        user = args[0]; /* Use the arg as the name to greet if provided */
-      }
+      String user = "Peyman";
       client.shake(user);
     } finally {
       client.shutdown();
