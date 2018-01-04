@@ -6,10 +6,10 @@ option java_outer_classname = "YodaProto";
 
 package yoda;
 
-/******************** Genius Service Entities *************************/
+/******************** Yoda Service Entities *************************/
 
 /*
- * Yoda service exposing monitoring/checks & balance RPC calls
+ * Yoda service exposing endpoints for TBD 
  */
 service Yoda {
   /*
