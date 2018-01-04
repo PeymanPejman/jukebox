@@ -11,12 +11,12 @@ WORKDIR /usr/jukebox/yoda
 
 # Copy project object model and source directory
 COPY pom.xml .
-COPY src .
-COPY protos .
+COPY src ./src
+COPY protos ./protos
 
 # Build/verify mvn project
 RUN ["mvn", "verify"]
 RUN ["mvn", "package"]
 
 # Make default entrypoint run App's main
-ENTRYPOINT ["mvn", "exec:java", "-Dexec.mainClass=life.jukebox.yoda.HandshakeServer", "-e"]
+ENTRYPOINT ["mvn", "exec:java", "-Dexec.mainClass=life.jukebox.yoda.YodaGrpcServer"]
