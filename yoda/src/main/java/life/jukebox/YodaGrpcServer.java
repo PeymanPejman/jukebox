@@ -11,6 +11,7 @@ import java.util.logging.Logger;
  */
 public class YodaGrpcServer {
   private static final int DEFAULT_JB_YODA_SERVICE_PORT = 37000;
+  private static final String DEFAULT_JB_YODA_SERVICE_PORT_ENV_KEY = "JB_YODA_SERVICE_PORT";
 
   private static final Logger logger = Logger.getLogger(YodaGrpcServer.class.getName());
 
