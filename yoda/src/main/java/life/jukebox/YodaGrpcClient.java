@@ -14,6 +14,7 @@ public class YodaGrpcClient {
   private static final int DEFAULT_JB_YODA_SERVICE_PORT = 37000;
   private static final String DEFAULT_JB_YODA_SERVICE_HOST = "localhost";
   private static final String JB_YODA_SERVICE_HOST_ENV_KEY = "JB_YODA_SERVICE_HOST";
+  private static final String JB_YODA_SERVICE_PORT_ENV_KEY = "JB_YODA_SERVICE_PORT";
 
   private static final Logger logger = Logger.getLogger(YodaGrpcClient.class.getName());
 
@@ -50,10 +51,10 @@ public class YodaGrpcClient {
 
   public static void main(String[] args) throws Exception {
     String host = System.getenv(JB_YODA_SERVICE_HOST_ENV_KEY) != null ?
-      System.getenv("JB_YODA_SERVICE_HOST") : DEFAULT_JB_YODA_SERVICE_HOST;
+      System.getenv(JB_YODA_SERVICE_HOST_ENV_KEY) : DEFAULT_JB_YODA_SERVICE_HOST;
 
-    int port = System.getenv("JB_YODA_SERVICE_PORT") != null ?
-      Integer.parseInt(System.getenv("JB_YODA_SERVICE_PORT")) : DEFAULT_JB_YODA_SERVICE_PORT;
+    int port = System.getenv(JB_YODA_SERVICE_PORT_ENV_KEY) != null ?
+      Integer.parseInt(System.getenv(JB_YODA_SERVICE_PORT_ENV_KEY)) : DEFAULT_JB_YODA_SERVICE_PORT;
 
     YodaGrpcClient client = new YodaGrpcClient(host, port);
     try {
