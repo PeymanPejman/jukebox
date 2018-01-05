@@ -16,13 +16,17 @@ build-gen: .FORCE
 	python3 -m grpc_tools.protoc -I ./protos --python_out=$(GEN_PROTOS) \
 	--grpc_python_out=$(GEN_PROTOS) ./protos/genius.proto
 
+# Builds protos for Yoda
+build-yoda: .FORCE	
+	cp -rf protos yoda
+
 # Builds protos for all services
 build: protos
 
 # Builds proto files for app and fe
 # Compiles genius protos and marks it as a python package directory
 protos: .FORCE
-	echo fe app gen | xargs -n 1 cp -rf protos
+	echo fe app gen yoda | xargs -n 1 cp -rf protos
 
 # Creates a Docker network for local integration
 network:

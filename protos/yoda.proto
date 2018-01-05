@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "life.jukebox.yoda";
+option java_outer_classname = "YodaProto";
+
+package yoda;
+
+/******************** Yoda Service Entities *************************/
+
+/*
+ * Yoda service exposing endpoints for TBD 
+ */
+service Yoda {
+  /*
+   * Test RPC method
+   */
+  rpc Shake(HandshakeRequest) returns (HandshakeResponse) {}
+}
+
+message HandshakeRequest {
+  string name = 1;
+}
+
+message HandshakeResponse {
+  string message = 1;
+}
