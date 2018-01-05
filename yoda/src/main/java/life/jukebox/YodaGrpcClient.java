@@ -8,11 +8,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * A simple client that requests a greeting from the YodaGrpcServer.
+ * A simple client that sends a greeting request to the YodaGrpcServer.
  */
 public class YodaGrpcClient {
   private static final int DEFAULT_JB_YODA_SERVICE_PORT = 37000;
   private static final String DEFAULT_JB_YODA_SERVICE_HOST = "localhost";
+  private static final String JB_YODA_SERVICE_HOST_ENV_KEY = "JB_YODA_SERVICE_HOST";
 
   private static final Logger logger = Logger.getLogger(YodaGrpcClient.class.getName());
 
@@ -21,13 +22,10 @@ public class YodaGrpcClient {
 
   public YodaGrpcClient(String host, int port) {
     this(ManagedChannelBuilder.forAddress(host, port)
-        // Channels are secure by default (via SSL/TLS). For the example we disable TLS to avoid
-        // needing certificates.
         .usePlaintext(true)
         .build());
   }
 
-  /** Construct client for accessing RouteGuide server using the existing channel. */
   YodaGrpcClient(ManagedChannel channel) {
     this.channel = channel;
     blockingStub = YodaGrpc.newBlockingStub(channel);
@@ -50,19 +48,14 @@ public class YodaGrpcClient {
     logger.info("Greeting: " + response.getMessage());
   }
 
-  private static int getPort(){
-    return System.getenv("JB_YODA_SERVICE_PORT") != null ?
-      Integer.parseInt(System.getenv("JB_YODA_SERVICE_PORT")) : DEFAULT_JB_YODA_SERVICE_PORT;
-  }
-
-  private static String getHost(){
-    return System.getenv("JB_YODA_SERVICE_HOST") != null ?
-      System.getenv("JB_YODA_SERVICE_HOST") : DEFAULT_JB_YODA_SERVICE_HOST;
-  }
-
-
   public static void main(String[] args) throws Exception {
-    YodaGrpcClient client = new YodaGrpcClient(getHost(), getPort());
+    String host = System.getenv(JB_YODA_SERVICE_HOST_ENV_KEY) != null ?
+      System.getenv("JB_YODA_SERVICE_HOST") : DEFAULT_JB_YODA_SERVICE_HOST;
+
+    int port = System.getenv("JB_YODA_SERVICE_PORT") != null ?
+      Integer.parseInt(System.getenv("JB_YODA_SERVICE_PORT")) : DEFAULT_JB_YODA_SERVICE_PORT;
+
+    YodaGrpcClient client = new YodaGrpcClient(host, port);
     try {
       String user = "Peyman";
       client.shake(user);
