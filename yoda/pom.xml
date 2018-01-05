@@ -4,7 +4,7 @@
   <groupId>life.jukebox.yoda</groupId>
   <artifactId>yoda</artifactId>
   <packaging>jar</packaging>
-  <version>0.1-SNAPSHOT</version>
+  <version>0.1</version>
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
