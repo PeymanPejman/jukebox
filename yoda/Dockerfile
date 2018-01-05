@@ -18,5 +18,5 @@ COPY protos ./protos
 RUN ["mvn", "verify"]
 RUN ["mvn", "package"]
 
-# Make default entrypoint run App's main
+# Make default entrypoint start Yoda's gRPC server
 ENTRYPOINT ["mvn", "exec:java", "-Dexec.mainClass=life.jukebox.yoda.YodaGrpcServer"]
