@@ -10,12 +10,13 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
 public class YodaSubscriberClient{
-  private static final String PROJECT_ID = getEnvironmentVariable("GCP_PROJECT_ID");
-  private static final String SUBSCRIPTION_ID = getEnvironmentVariable("PUBSUB_SUB_JUKEBOX_CREATED_YODA");
+  private static final String PROJECT_ID = getEnvironmentVariableOrDie("GCP_PROJECT_ID");
+  private static final String SUBSCRIPTION_ID = getEnvironmentVariableOrDie("PUBSUB_SUB_JUKEBOX_CREATED_YODA");
 
-    private static String getEnvironmentVariable (String environmentKey) throws IllegalArgumentException {
+    private static String getEnvironmentVariableOrDie (String environmentKey) {
       if (System.getenv(environmentKey) == null) { 
-        throw new IllegalArgumentException("Environment variable " + environmentKey + " does not exist");
+        System.err.println("Environment variable " + environmentKey + " does not exist");
+        System.exit(1);
       }
       return System.getenv(environmentKey);
     }

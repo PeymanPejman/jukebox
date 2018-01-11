@@ -11,8 +11,7 @@ public class JukeboxCreatedMessageReceiver implements MessageReceiver {
 
   @Override
   public void receiveMessage(PubsubMessage message, AckReplyConsumer consumer) {
-    System.out.println("Message Id: " + message.getMessageId());
-    System.out.println("Data: :" + message.getData().toStringUtf8());
+    System.out.printf("Message [%s]: '%%s'\n", message.getMessageId(), message.getData().toStringUtf8());
     consumer.ack();
   }
 }
