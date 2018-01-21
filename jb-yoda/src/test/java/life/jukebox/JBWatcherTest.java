@@ -14,6 +14,7 @@ public class JBWatcherTest extends TestCase {
   {
     super( testName );
   }
+  
   @before 
   public void createWather() {
     JBWatcher watcher = new JBWatcher("test-JBId");
