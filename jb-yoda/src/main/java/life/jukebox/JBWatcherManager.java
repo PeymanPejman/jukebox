@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.concurrent.*;
 
 public class JBWatcherManager {
 	private ScheduledExecutorService scheduler;
@@ -17,14 +18,14 @@ public class JBWatcherManager {
 		}
 		return manager;
 	}
-	
-	public void addWatcher(watcher) {
+
+	public void addWatcher(JBWatcher watcher) {
 		if (!activeWatchers.add(watcher)) return;
 		ScheduledFuture<?> watcherHandle = scheduler.scheduleAtFixedRate(watcher, 0, WATCHER_PERIOD, TimeUnit.SECONDS);
 		watcher.setWatcherHandle(watcherHandle);
 	}
 
-	public void killWatcher(watcher) {
+	public void killWatcher(JBWatcher watcher) {
 		if (!activeWatchers.remove(watcher)) return;
 		watcher.getWatcherHandle().cancel(false);
 	}
