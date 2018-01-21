@@ -29,6 +29,7 @@ public class JBWatcherManager {
     if (!activeWatchers.remove(watcher)) return;
     watcher.getWatcherHandle().cancel(false);
   }
+  
   public boolean isWatcherActive(watcher) {
     return activeWatcher.contains(watcher);
   }
