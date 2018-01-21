@@ -12,6 +12,7 @@ public class JBWatcherManagerTest extends TestCase {
   {
     super( testName );
   }
+  
   @before 
   public void initializeManager() {
     JBWatcherManeger manager = JBWatcherManager.getInstance();  
