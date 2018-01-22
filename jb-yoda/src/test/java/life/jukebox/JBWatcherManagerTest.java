@@ -1,22 +1,18 @@
-package life.jukebox.yoda;
+import static org.junit.Assert.*;
+import org.junit.*;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-import java.util.concurent.*;
+import java.util.concurrent.*;
 import java.util.*;
 
-public class JBWatcherManagerTest extends TestCase {
-  
-  public JBWatcherManagerTest( String testName )
-  {
-    super( testName );
-  }
-  
-  @before 
+public class JBWatcherManagerTest {
+
+  JBWatcherManager manager;
+  JBWatcher watcher;
+
+  @Before 
   public void initializeManager() {
-    JBWatcherManeger manager = JBWatcherManager.getInstance();  
-    JBWatcher watcher = new JBWatcher("test-JBId");
+    manager = JBWatcherManager.getInstance();  
+    watcher = new JBWatcher("test-JBId");
   }
   
   @Test
@@ -27,13 +23,13 @@ public class JBWatcherManagerTest extends TestCase {
   }
   
   @Test
-  public void testAddWatcherSettingWatcherHandle(watcher) {
-    assertNull(watcher.getWatcherHandle(watcher));
+  public void testAddWatcherSettingWatcherHandle() {
+    assertNull(watcher.getWatcherHandle());
     manager.addWatcher(watcher);
-    assertNotNull(watcher.getWactherHandle(watcher));
+    assertNotNull(watcher.getWatcherHandle());
   }
 
-  @after
+  @After
   public void cleanUp(){
     if (manager.isWatcherActive(watcher)) {
       manager.killWatcher(watcher);
