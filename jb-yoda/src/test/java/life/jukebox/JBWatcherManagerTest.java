@@ -1,3 +1,5 @@
+package life.jukebox.yoda;
+
 import static org.junit.Assert.*;
 import org.junit.*;
 
@@ -18,14 +20,14 @@ public class JBWatcherManagerTest {
   @Test
   public void testAddWatcherActiveWatcher() {
     assertFalse(manager.isWatcherActive(watcher));
-    manager.addWatcher(watcher);
+    manager.activateWatcher(watcher);
     assertTrue(manager.isWatcherActive(watcher));
   }
   
   @Test
   public void testAddWatcherSettingWatcherHandle() {
     assertNull(watcher.getWatcherHandle());
-    manager.addWatcher(watcher);
+    manager.activateWatcher(watcher);
     assertNotNull(watcher.getWatcherHandle());
   }
 

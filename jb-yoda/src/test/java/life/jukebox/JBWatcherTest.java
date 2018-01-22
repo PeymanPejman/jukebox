@@ -1,3 +1,5 @@
+package life.jukebox.yoda;
+
 import static org.junit.Assert.*;
 import org.junit.*;
 import java.util.concurrent.*;
@@ -10,7 +12,7 @@ public class JBWatcherTest {
   JBWatcher watcher;
   
   @Before 
-  public void createWather() {
+  public void setup() {
     watcher = new JBWatcher("test-JBId");
     System.setOut(new PrintStream(outContent));
   }
@@ -19,13 +21,5 @@ public class JBWatcherTest {
   public void testRun() {
     watcher.run();
     assertNotNull(outContent.toString());
-    assertTrue(true);
   }
-
-  @After
-  public void cleanUp(){
-    watcher = null;
-    System.setOut(System.out);
-  }
-
 }
